@@ -1,0 +1,13 @@
+***LARGE REPO***
+ERROR:
+Cloning into 'large-repository'...
+remote: Counting objects: 20248, done.
+remote: Compressing objects: 100% (10204/10204), done.
+error: RPC failed; curl 18 transfer closed with outstanding read data remaining 
+fatal: The remote end hung up unexpectedly
+fatal: early EOF
+fatal: index-pack failed
+FIX:
+$ git clone http://github.com/large-repository --depth 1
+$ cd large-repository
+$ git fetch --unshallow
