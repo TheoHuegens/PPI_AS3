@@ -32,7 +32,7 @@ c = colorbar;
 c.Label.String = 'log10(k2) [-]';
 xlabel("mu, Shear Modulus [GPa]");
 ylabel("eta, Viscosity [Pa s]");
-movegui(figure(3), [600 450]);
+movegui(figure(3), [600 400]);
 
 figure(4)
 pcolor(x,y,ResultTestsH);
@@ -43,5 +43,5 @@ c = colorbar;
 c.Label.String = 'log10(h2) [-]';
 xlabel("mu, Shear Modulus [GPa]");
 ylabel("eta, Viscosity [Pa s]");
-movegui(figure(4), [0 450]);
+movegui(figure(4), [0 400]);
 
