@@ -26,8 +26,6 @@ MercuryModel = [
     [2439.4,3100,120e9,55e9,1e23]
     ];
 
-
-
 %% 1D parameters variations
 if eval_1D == true
     Nvars = 10;
