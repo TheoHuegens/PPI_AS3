@@ -14,7 +14,7 @@ addpath(genpath(pwd))
 
 %% choose evals
 eval_1D = false;
-eval_2D = true;
+eval_2D = false;
 
 %% Layer Model
 
@@ -82,6 +82,10 @@ if eval_1D == true
     movegui(figure(2), [0 25]);
     hold off;
 end
+
+%% default model
+[h2,k2] = Multi_Layer_Icy_Eval(MercuryModel);
+ResultTests = [h2,k2];
 
 %% 2D parameters variations
 if eval_2D == true

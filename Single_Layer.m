@@ -141,6 +141,10 @@ if eval_1V == true
 
 end
 
+%% default model
+[h2,k2] = Single_Layer_Eval(MercuryModel);
+ResultTests = [h2,k2];
+
 function [h2,k2] = Single_Layer_Eval(MercuryLayers)
 
     %% planetary model
