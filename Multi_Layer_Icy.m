@@ -1,5 +1,6 @@
 %% clear
 clearvars
+close all
 clc
 set(0,'defaulttextInterpreter','latex') 
 mfile_name          = mfilename('fullpath');
@@ -11,6 +12,10 @@ cd(pathstr);
 cd('..')
 addpath(genpath(pwd))
 
+%% choose evals
+eval_1D = false;
+eval_2D = true;
+
 %% Layer Model
 
 % multi layer
@@ -21,8 +26,7 @@ MercuryModel = [
     [2439.4,3100,120e9,55e9,1e23]
     ];
 
-eval_1D = false;
-eval_2D = true;
+
 
 %% 1D parameters variations
 if eval_1D == true
@@ -52,8 +56,6 @@ if eval_1D == true
     ResultTestsK = transpose(real(ResultTests(:,:,2)));
     
     % plot
-    close all
-    
     param_legend = {'density [kg/m3]','bulk modulus [GPa]','shear modulus [GPa]','viscosity [Pa s]'};
     aa = 20;
     bb = 10;
@@ -117,9 +119,7 @@ if eval_2D == true
     ResultTestsH = real(ResultTests(:,:,1));
     ResultTestsK = real(ResultTests(:,:,2));
     
-    % plot
-    close all
-    
+    % plot    
     aa = 20;
     bb = 10;
     
@@ -178,61 +178,46 @@ function [h2,k2] = Multi_Layer_Icy_Eval(MercuryLayers)
     Interior_Model_Mercury(1).rho0= MercuryLayers(1,2);
     Interior_Model_Mercury(1).Ks0= MercuryLayers(1,3);
     Interior_Model_Mercury(1).mu0= MercuryLayers(1,4);
-    Interior_Model_Mercury(1).eta0= MercuryLayers(1,5);
-    % defaults from bulk
-    % Interior_Model_Mercury(1).rho0= 3758.609;
-    % Interior_Model_Mercury(1).Ks0= 57.22543e9; % Bulk modulus
-    % Interior_Model_Mercury(1).mu0= 8.548402e9;  %shear modulus
-    % Interior_Model_Mercury(1).eta0= 1.03e19;  %viscosity
+    if MercuryLayers(1,5) ~= 0
+        Interior_Model_Mercury(1).eta0= MercuryLayers(1,5);  %viscosity
+    end
     
     % Fe,sol Inner-Core (2)
     Interior_Model_Mercury(2).R0= MercuryLayers(1,1);
     Interior_Model_Mercury(2).rho0= MercuryLayers(1,2);
     Interior_Model_Mercury(2).Ks0= MercuryLayers(1,3);
     Interior_Model_Mercury(2).mu0= MercuryLayers(1,4);
-    Interior_Model_Mercury(2).eta0= MercuryLayers(1,5);
-    % defaults from bulk
-    % Interior_Model_Mercury(2).rho0= 3758.609;
-    % Interior_Model_Mercury(2).Ks0= 57.22543e9; % Bulk modulus
-    % Interior_Model_Mercury(2).mu0= 8.548402e9;  %shear modulus
-    % Interior_Model_Mercury(2).eta0= 1.03e19;  %viscosity
+    if MercuryLayers(2,5) ~= 0
+        Interior_Model_Mercury(2).eta0= MercuryLayers(2,5);  %viscosity
+    end
     
     % FeS,liq Outer-Core (3)
     Interior_Model_Mercury(3).R0= MercuryLayers(2,1);
     Interior_Model_Mercury(3).rho0= MercuryLayers(2,2);
     Interior_Model_Mercury(3).Ks0= MercuryLayers(2,3);
     Interior_Model_Mercury(3).mu0= MercuryLayers(2,4);
-    Interior_Model_Mercury(3).eta0= MercuryLayers(2,5);
+    if MercuryLayers(2,5) ~= 0
+        Interior_Model_Mercury(3).eta0= MercuryLayers(2,5);  %viscosity
+    end
     Interior_Model_Mercury(3).ocean= 1;
-    % defaults from bulk
-    % Interior_Model_Mercury(3).rho0=(4, 3758.609;
-    % Interior_Model_Mercury(3).Ks0= 57.22543e9; % Bulk modulus
-    % Interior_Model_Mercury(3).mu0= 8.548402e9;  %shear modulus
-    % Interior_Model_Mercury(3).eta0= 1.03e19;  %viscosity
     
     % MA mantle (4) 
     Interior_Model_Mercury(4).R0= MercuryLayers(3,1);
     Interior_Model_Mercury(4).rho0= MercuryLayers(3,2);
     Interior_Model_Mercury(4).Ks0= MercuryLayers(3,3);
     Interior_Model_Mercury(4).mu0= MercuryLayers(3,4);
-    Interior_Model_Mercury(4).eta0= MercuryLayers(3,5);
-    % defaults from bulk
-    % Interior_Model_Mercury(4).rho0= 3758.609;
-    % Interior_Model_Mercury(4).Ks0= 57.22543e9; % Bulk modulus
-    % Interior_Model_Mercury(4).mu0= 8.548402e9;  %shear modulus
-    % Interior_Model_Mercury(4).eta0= 1.03e19;  %viscosity
+    if MercuryLayers(3,5) ~= 0
+        Interior_Model_Mercury(4).eta0= MercuryLayers(3,5);  %viscosity
+    end
     
     %  crust (5) 
     Interior_Model_Mercury(5).R0= MercuryLayers(4,1);
     Interior_Model_Mercury(5).rho0= MercuryLayers(4,2);
     Interior_Model_Mercury(5).Ks0= MercuryLayers(4,3);
     Interior_Model_Mercury(5).mu0= MercuryLayers(4,4);
-    Interior_Model_Mercury(5).eta0= MercuryLayers(4,5);
-    % defaults from bulk
-    % Interior_Model_Mercury(5).rho0= 3758.609;
-    % Interior_Model_Mercury(5).Ks0= 57.22543e9; % Bulk modulus
-    % Interior_Model_Mercury(5).mu0= 8.548402e9;  %shear modulus
-    % Interior_Model_Mercury(5).eta0= 1.03e19;  %viscosity
+    if MercuryLayers(4,5) ~= 0
+        Interior_Model_Mercury(5).eta0= MercuryLayers(4,5);  %viscosity
+    end
     
     %% forcing
     Forcing_Mercury(1).Td=87.969*24*3600; 
