@@ -30,9 +30,10 @@ MercuryModel = [
     [2439.4,3758.61,57.23e9,8.55e9,1.03e9]
     ];
 
-% 2D parameters variations
-Nvars = 10;
+% elasticity variations
 
+%% 2D parameters variations
+Nvars = 10;
 tests = [ % 1=boundary, 2=density, 3=bulk modulus, 4=shear modulus, 5=viscosity
     [4,linspace(0.1*mu0,10*mu0,Nvars)],
     [5,linspace(eta0*1e-5,eta0*1e5,Nvars)]
@@ -51,7 +52,7 @@ end
 [szx,szy] = size(ModelTests);
 ResultTests = zeros(szx,szy,2);
 
-%% test variations
+% test variations
 for t = 1:szx
     for v = 1:szy
         MercuryLayers = ModelTests(t,v);
@@ -62,7 +63,7 @@ end
 ResultTestsH = real(ResultTests(:,:,1));
 ResultTestsK = real(ResultTests(:,:,2));
 
-%% plot
+% plot
 close all
 
 aa = 20;

@@ -21,67 +21,154 @@ MercuryModel = [
     [2439.4,3100,120e9,55e9,1e23]
     ];
 
-% single layer
-MercuryModelBase = [
-    [2439.4,3758.61,57.23e9,8.55e9,1.03e9]
-    ];
+eval_1D = false;
+eval_2D = true;
 
-% 1D parameters variations
-Nvars = 10;
-MagVar = logspace(-1,1,Nvars);
-ModelTests = cell(1);
-for t = 1:length(MercuryModel(1,:))-1 % for each variable, except boundaries
-    for v = 1:Nvars % for each variable change
-        TestModel = MercuryModel; % copy of base model
-        TestModel(:,t+1) = MercuryModel(:,t+1)*MagVar(v); % replace with test value
-        ModelTests{t,v} = TestModel; % save model as test
+%% 1D parameters variations
+if eval_1D == true
+    Nvars = 10;
+    MagVar = logspace(-1,1,Nvars);
+    ModelTests = cell(1);
+    for t = 1:length(MercuryModel(1,:))-1 % for each variable, except boundaries
+        for v = 1:Nvars % for each variable change
+            TestModel = MercuryModel; % copy of base model
+            TestModel(:,t+1) = MercuryModel(:,t+1)*MagVar(v); % replace with test value
+            ModelTests{t,v} = TestModel; % save model as test
+        end
     end
-end
-%ModelTests = reshape(ModelTests,[],1);
-[szx,szy] = size(ModelTests);
-ResultTests = zeros(szx,szy,2);
-
-%% test variations
-for t = 1:szx
-    for v = 1:szy
-        MercuryLayers = ModelTests(t,v);
-        [h2,k2] = Multi_Layer_Icy_Eval(MercuryLayers{1});
-        ResultTests(t,v,:) = [h2,k2];
+    %ModelTests = reshape(ModelTests,[],1);
+    [szx,szy] = size(ModelTests);
+    ResultTests = zeros(szx,szy,2);
+    
+    % test variations
+    for t = 1:szx
+        for v = 1:szy
+            MercuryLayers = ModelTests(t,v);
+            [h2,k2] = Multi_Layer_Icy_Eval(MercuryLayers{1});
+            ResultTests(t,v,:) = [h2,k2];
+        end
     end
+    ResultTestsH = transpose(real(ResultTests(:,:,1)));
+    ResultTestsK = transpose(real(ResultTests(:,:,2)));
+    
+    % plot
+    close all
+    
+    param_legend = {'density [kg/m3]','bulk modulus [GPa]','shear modulus [GPa]','viscosity [Pa s]'};
+    aa = 20;
+    bb = 10;
+    
+    figure(1)
+    for v = 1:length(param_legend)
+        semilogx(MagVar,ResultTestsH(:,v),'LineWidth',2);
+        hold on;
+    end
+    axis([MagVar(1) MagVar(end) -2 2])
+    legend(param_legend, 'Location', 'southwest','Fontsize',bb);
+    ylabel("h2 [-]",'Fontsize',aa);
+    xlabel("parameter change factor [-]",'Fontsize',aa)
+    movegui(figure(1), [600 25]);
+    hold off;
+    
+    figure(2)
+    for v = 1:length(param_legend)
+        semilogx(MagVar,ResultTestsK(:,v),'LineWidth',2);
+        hold on;
+    end
+    axis([MagVar(1) MagVar(end) -2 2])
+    legend(param_legend, 'Location', 'southwest','Fontsize',bb);
+    ylabel("k2 [-]",'Fontsize',aa);
+    xlabel("parameter change factor [-]",'Fontsize',aa)
+    movegui(figure(2), [0 25]);
+    hold off;
 end
-ResultTestsH = transpose(real(ResultTests(:,:,1)));
-ResultTestsK = transpose(real(ResultTests(:,:,2)));
 
-%% plot
-close all
+%% 2D parameters variations
+if eval_2D == true
+    Nvars = 3;
+    MagVar = logspace(-1,1,Nvars);
+    tests = [ % 1=boundary, 2=density, 3=bulk modulus, 4=shear modulus, 5=viscosity
+        [2,MagVar],
+        [4,MagVar]
+        ];
+    
+    ModelTests = cell(1);
+    for t = 1:length(tests(1,:))-1
+        for v = 1:length(tests(2,:))-1
+            TestModel = MercuryModel; % copy of base model
+            TestModel(:,tests(1,1)) = tests(1,t+1)*TestModel(:,tests(1,1)); % replace with test value
+            TestModel(:,tests(2,1)) = tests(2,v+1)*TestModel(:,tests(2,1)); % replace with test value
+            ModelTests{t,v} = TestModel; % save model as test
+        end
+    end
+    
+    %ModelTests = reshape(ModelTests,[],1);
+    [szx,szy] = size(ModelTests);
+    ResultTests = zeros(szx,szy,2);
+    
+    % test variations
+    for t = 1:szx
+        for v = 1:szy
+            MercuryLayers = ModelTests(t,v);
+            [h2,k2] = Multi_Layer_Icy_Eval(MercuryLayers{1});
+            ResultTests(t,v,:) = [h2,k2];
+        end
+    end
+    ResultTestsH = real(ResultTests(:,:,1));
+    ResultTestsK = real(ResultTests(:,:,2));
+    
+    % plot
+    close all
+    
+    aa = 20;
+    bb = 10;
+    
+    x = tests(1,2:end);
+    y = tests(2,2:end);
+    
+    figure(1)
+    contourf(x,y,ResultTestsK);
+    c = colorbar;
+    c.Label.String = 'k2 [-]';
+    c.Ticks = -3:1;
+    c.TickLabels = compose('10^{%d}',c.Ticks);
+    xlabel("rho, density [kg/m3]",'Fontsize',aa);
+    ylabel("eta, Viscosity [Pa s]",'Fontsize',aa);
+    movegui(figure(1), [600 25]);
+    
+    figure(2)
+    contourf(x,y,ResultTestsH);
+    c = colorbar;
+    c.Label.String = 'h2 [-]';
+    c.Ticks = -3:1;
+    c.TickLabels = compose('10^{%d}',c.Ticks);
+    xlabel("rho, density [kg/m3]",'Fontsize',aa);
+    ylabel("eta, Viscosity [Pa s]",'Fontsize',aa);
+    movegui(figure(2), [0 25]);
+    
+    % figure(3)
+    % pcolor(x,y,ResultTestsK);
+    % p.EdgeColor = 'none';
+    % set(gca,'ColorScale','log');
+    % 
+    % c = colorbar;
+    % c.Label.String = 'log10(k2) [-]';
+    % xlabel("rho, density [kg/m3]",'Fontsize',aa);
+    % ylabel("eta, Viscosity [Pa s]",'Fontsize',aa);
+    % movegui(figure(3), [600 400]);
+    % 
+    % figure(4)
+    % pcolor(x,y,ResultTestsH);
+    % p.EdgeColor = 'none';
+    % set(gca,'ColorScale','log');
+    % 
+    % c = colorbar;
+    % c.Label.String = 'log10(h2) [-]';
+    % xlabel("rho, density [kg/m3]",'Fontsize',aa);
+    % ylabel("eta, Viscosity [Pa s]",'Fontsize',aa);
+    % movegui(figure(4), [0 400]);
 
-param_legend = {'density [kg/m3]','bulk modulus [GPa]','shear modulus [GPa]','viscosity [Pa s]'};
-aa = 20;
-bb = 10;
-
-figure(1)
-for v = 1:length(param_legend)
-    semilogx(MagVar,ResultTestsH(:,v),'LineWidth',2);
-    hold on;
 end
-axis([MagVar(1) MagVar(end) -2 2])
-legend(param_legend, 'Location', 'southwest','Fontsize',bb);
-ylabel("h2 [-]",'Fontsize',aa);
-xlabel("parameter change factor [-]",'Fontsize',aa)
-movegui(figure(1), [600 25]);
-hold off;
-
-figure(2)
-for v = 1:length(param_legend)
-    semilogx(MagVar,ResultTestsK(:,v),'LineWidth',2);
-    hold on;
-end
-axis([MagVar(1) MagVar(end) -2 2])
-legend(param_legend, 'Location', 'southwest','Fontsize',bb);
-ylabel("k2 [-]",'Fontsize',aa);
-xlabel("parameter chaneg factor [-]",'Fontsize',aa)
-movegui(figure(2), [0 25]);
-hold off;
 
 function [h2,k2] = Multi_Layer_Icy_Eval(MercuryLayers)
 
