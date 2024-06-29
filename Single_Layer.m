@@ -13,8 +13,8 @@ cd('..')
 addpath(genpath(pwd))
 
 %% choose evals
-eval_1V = false; % verif
-eval_2D = true; % eval
+eval_1V = true; % verif
+eval_2D = false; % eval
 
 %% Layer Model
 
@@ -26,41 +26,6 @@ MercuryModel = [
 % parameter baselines
 mu0 = 70e9; %rock
 eta0 = 1e20;
-
-
-
-%% elasticity variations
-if eval_1V == true
-
-    ModelTests = cell(1);
-    
-    % an elastic model (remove or comment Interior_Model.eta);
-    TestModel = MercuryModel;
-    TestModel(5) = 0; % replace with test value
-    ModelTests{1} = TestModel; % save model as test
-    
-    % a viscoelastic model;
-    TestModel = MercuryModel;
-    ModelTests{2} = TestModel; % save model as test
-    
-    % an ideal fluid (this can be approximated by considering ω → 0).
-    TestModel = MercuryModel;
-    TestModel(4) = 0; % replace with test value
-    ModelTests{3} = TestModel; % save model as test
-
-    % test variations
-    ResultTests = zeros(3,2);
-    for t = 1:3
-        MercuryLayers = ModelTests(t,v);
-        [h2,k2] = Single_Layer_Eval(MercuryLayers{1});
-    end
-    ResultTestsH = real(ResultTests(:,1));
-    ResultTestsK = real(ResultTests(:,2));
-
-    % plot    
-    param_legend = {'elastic','viscoelastic','ideal fluid'};
-    disp
-end
 
 %% 2D parameters variations
 if eval_2D == true
@@ -142,6 +107,38 @@ if eval_2D == true
     xlabel("mu, Shear Modulus [GPa]",'Fontsize',aa);
     ylabel("eta, Viscosity [Pa s]",'Fontsize',aa);
     movegui(figure(4), [0 400]);
+end
+
+%% elasticity variations
+if eval_1V == true
+
+    ModelTests = cell(1);
+    
+    % an elastic model (remove or comment Interior_Model.eta);
+    TestModel = MercuryModel;
+    TestModel(5) = 0; % replace with test value
+    ModelTests{1} = TestModel; % save model as test
+    
+    % a viscoelastic model;
+    TestModel = MercuryModel;
+    ModelTests{2} = TestModel; % save model as test
+    
+    % an ideal fluid (this can be approximated by considering ω → 0).
+    TestModel = MercuryModel;
+    TestModel(4) = 5; % replace with test value
+    ModelTests{3} = TestModel; % save model as test
+
+    % test variations
+    ResultTests = zeros(3,2);
+    param_legend = {'elastic','viscoelastic','ideal fluid'};
+    for t = 1:3
+        MercuryLayers = ModelTests(t);
+        [h2,k2] = Single_Layer_Eval(MercuryLayers{1});
+        ResultTests(t,:) = [h2,k2];
+    end
+    ResultTestsH = real(ResultTests(:,1));
+    ResultTestsK = real(ResultTests(:,2));
+
 end
 
 function [h2,k2] = Single_Layer_Eval(MercuryLayers)
