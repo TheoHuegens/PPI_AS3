@@ -14,7 +14,7 @@ addpath(genpath(pwd))
 
 %% choose evals
 eval_1D = true;
-eval_2D = true;
+eval_2D = false;
 
 %% Layer Model
 
@@ -28,11 +28,11 @@ eval_2D = true;
 
 % multi layer
 MercuryModel = [
-    [2439.4*1e-3, 8170, 0, 0, 0],
-    [427.8042, 8170, 165e9, 100e9, 1e20],
+    [2439.4*1e-3, 7225, 0, 0, 0],
+    [427.8042, 7225, 165e9, 100e9, 1e20],
     [1113.349, 7019, 87e9, 0, 0],
-    [2326.946, 3200, 120e9, 65e9, 6.41e11],
-    [2439.4, 3200, 120e9, 55e9, 1e23]
+    [2326.946, 3307.6, 120e9, 65e9, 6.41e11],
+    [2439.4, 3100, 120e9, 55e9, 1e23]
     ];
 
 %% 1D parameters variations
@@ -72,7 +72,7 @@ if eval_1D == true
         semilogx(MagVar,ResultTestsH(:,v),'LineWidth',2);
         hold on;
     end
-    axis([MagVar(1) MagVar(end) -2 2])
+    axis([MagVar(1) MagVar(end) -3 3])
     legend(param_legend, 'Location', 'southwest','Fontsize',bb);
     ylabel("h2 [-]",'Fontsize',aa);
     xlabel("parameter change factor [-]",'Fontsize',aa)
@@ -84,7 +84,7 @@ if eval_1D == true
         semilogx(MagVar,ResultTestsK(:,v),'LineWidth',2);
         hold on;
     end
-    axis([MagVar(1) MagVar(end) -2 2])
+    axis([MagVar(1) MagVar(end) -3 3])
     legend(param_legend, 'Location', 'southwest','Fontsize',bb);
     ylabel("k2 [-]",'Fontsize',aa);
     xlabel("parameter change factor [-]",'Fontsize',aa)
