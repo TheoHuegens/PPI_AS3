@@ -13,17 +13,26 @@ cd('..')
 addpath(genpath(pwd))
 
 %% choose evals
-eval_1D = false;
-eval_2D = false;
+eval_1D = true;
+eval_2D = true;
 
 %% Layer Model
 
+% % multi layer
+% MercuryModel = [
+%     [427.8042,7225,127e9,100e9,1e20],
+%     [1113.349,7019,85.9e9,0,0],
+%     [2326.946,3307.6,129.9e9,65e9,1e11],
+%     [2439.4,3100,120e9,55e9,1e23]
+%     ];
+
 % multi layer
 MercuryModel = [
-    [427.8042,7225,127e9,100e9,1e20],
-    [1113.349,7019,85.9e9,0,0],
-    [2326.946,3307.6,129.9e9,65e9,1e11],
-    [2439.4,3100,120e9,55e9,1e23]
+    [2439.4*1e-3, 8170, 0, 0, 0],
+    [427.8042, 8170, 165e9, 100e9, 1e20],
+    [1113.349, 7019, 87e9, 0, 0],
+    [2326.946, 3200, 120e9, 65e9, 6.41e11],
+    [2439.4, 3200, 120e9, 55e9, 1e23]
     ];
 
 %% 1D parameters variations
@@ -175,50 +184,45 @@ end
 function [h2,k2] = Multi_Layer_Icy_Eval(MercuryLayers)
 
     %% planetary model
-    % Fe,sol Inner-Core, dummy liquid layer (1)
-    Interior_Model_Mercury(1).R0= 5;
+    % Fe,sol Inner-Core, dummy incompressible layer as boundcon (1)
+    Interior_Model_Mercury(1).R0= MercuryLayers(1,1);
     Interior_Model_Mercury(1).rho0= MercuryLayers(1,2);
-    Interior_Model_Mercury(1).Ks0= MercuryLayers(1,3);
-    Interior_Model_Mercury(1).mu0= MercuryLayers(1,4);
-    if MercuryLayers(1,5) ~= 0
-        Interior_Model_Mercury(1).eta0= MercuryLayers(1,5);  %viscosity
-    end
     
     % Fe,sol Inner-Core (2)
-    Interior_Model_Mercury(2).R0= MercuryLayers(1,1);
-    Interior_Model_Mercury(2).rho0= MercuryLayers(1,2);
-    Interior_Model_Mercury(2).Ks0= MercuryLayers(1,3);
-    Interior_Model_Mercury(2).mu0= MercuryLayers(1,4);
+    Interior_Model_Mercury(2).R0= MercuryLayers(2,1);
+    Interior_Model_Mercury(2).rho0= MercuryLayers(2,2);
+    Interior_Model_Mercury(2).Ks0= MercuryLayers(2,3);
+    Interior_Model_Mercury(2).mu0= MercuryLayers(2,4);
     if MercuryLayers(2,5) ~= 0
         Interior_Model_Mercury(2).eta0= MercuryLayers(2,5);  %viscosity
     end
     
     % FeS,liq Outer-Core (3)
-    Interior_Model_Mercury(3).R0= MercuryLayers(2,1);
-    Interior_Model_Mercury(3).rho0= MercuryLayers(2,2);
-    Interior_Model_Mercury(3).Ks0= MercuryLayers(2,3);
-    Interior_Model_Mercury(3).mu0= MercuryLayers(2,4);
-    if MercuryLayers(2,5) ~= 0
-        Interior_Model_Mercury(3).eta0= MercuryLayers(2,5);  %viscosity
+    Interior_Model_Mercury(3).R0= MercuryLayers(3,1);
+    Interior_Model_Mercury(3).rho0= MercuryLayers(3,2);
+    Interior_Model_Mercury(3).Ks0= MercuryLayers(3,3);
+    Interior_Model_Mercury(3).mu0= MercuryLayers(3,4);
+    if MercuryLayers(3,5) ~= 0
+        Interior_Model_Mercury(3).eta0= MercuryLayers(3,5);  %viscosity
     end
     Interior_Model_Mercury(3).ocean= 1;
     
     % MA mantle (4) 
-    Interior_Model_Mercury(4).R0= MercuryLayers(3,1);
-    Interior_Model_Mercury(4).rho0= MercuryLayers(3,2);
-    Interior_Model_Mercury(4).Ks0= MercuryLayers(3,3);
-    Interior_Model_Mercury(4).mu0= MercuryLayers(3,4);
-    if MercuryLayers(3,5) ~= 0
-        Interior_Model_Mercury(4).eta0= MercuryLayers(3,5);  %viscosity
+    Interior_Model_Mercury(4).R0= MercuryLayers(4,1);
+    Interior_Model_Mercury(4).rho0= MercuryLayers(4,2);
+    Interior_Model_Mercury(4).Ks0= MercuryLayers(4,3);
+    Interior_Model_Mercury(4).mu0= MercuryLayers(4,4);
+    if MercuryLayers(4,5) ~= 0
+        Interior_Model_Mercury(4).eta0= MercuryLayers(4,5);  %viscosity
     end
     
     %  crust (5) 
-    Interior_Model_Mercury(5).R0= MercuryLayers(4,1);
-    Interior_Model_Mercury(5).rho0= MercuryLayers(4,2);
-    Interior_Model_Mercury(5).Ks0= MercuryLayers(4,3);
-    Interior_Model_Mercury(5).mu0= MercuryLayers(4,4);
-    if MercuryLayers(4,5) ~= 0
-        Interior_Model_Mercury(5).eta0= MercuryLayers(4,5);  %viscosity
+    Interior_Model_Mercury(5).R0= MercuryLayers(5,1);
+    Interior_Model_Mercury(5).rho0= MercuryLayers(5,2);
+    Interior_Model_Mercury(5).Ks0= MercuryLayers(5,3);
+    Interior_Model_Mercury(5).mu0= MercuryLayers(5,4);
+    if MercuryLayers(5,5) ~= 0
+        Interior_Model_Mercury(5).eta0= MercuryLayers(5,5);  %viscosity
     end
     
     %% forcing
