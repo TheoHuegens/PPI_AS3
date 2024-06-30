@@ -14,7 +14,7 @@ addpath(genpath(pwd))
 
 %% choose evals
 eval_1D = false;
-eval_2D = true;
+eval_2D = false;
 
 %% Layer Model
 
@@ -27,13 +27,21 @@ eval_2D = true;
 %     ];
 
 % multi layer
+% MercuryModel = [
+%     [2439.4*1e-3, 7225, 0, 0, 0],
+%     [427.8042, 7225, 165e9, 100e9, 1e20],
+%     [1113.349, 7019, 87e9, 0, 0],
+%     [2326.946, 3307.6, 120e9, 65e9, 64.1e11],
+%     [2439.4, 3100, 120e9, 55e9, 1e23]
+%     ];
 MercuryModel = [
-    [2439.4*1e-3, 7225, 0, 0, 0],
-    [427.8042, 7225, 165e9, 100e9, 1e20],
-    [1113.349, 7019, 87e9, 0, 0],
-    [2326.946, 3307.6, 120e9, 65e9, 6.41e11],
-    [2439.4, 3100, 120e9, 55e9, 1e23]
+    [2439.4*1e-3, 8170, 0, 0, 0],
+    [1454, 8170, 165e9, 100e9, 1e20],
+    [0.5*(2090-1985)+1985, 7019, 87e9, 0, 0],
+    [2429.4, 3200, 120e9, 65e9, 1e20],
+    [2439.4, 3200, 120e9, 55e9, 1e23]
     ];
+
 
 %% 1D parameters variations
 if eval_1D == true
@@ -103,7 +111,7 @@ if eval_2D == true
     tests = [ % 1=boundary, 2=density, 3=bulk modulus, 4=shear modulus, 5=viscosity
         [2,MagVar],
         [4,MagVar]
-        ]
+        ];
     
     ModelTests = cell(1);
     for t = 1:length(tests(1,:))-1
