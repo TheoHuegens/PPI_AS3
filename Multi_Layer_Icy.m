@@ -13,8 +13,8 @@ cd('..')
 addpath(genpath(pwd))
 
 %% choose evals
-eval_1D = true;
-eval_2D = false;
+eval_1D = false;
+eval_2D = true;
 
 %% Layer Model
 
@@ -103,7 +103,7 @@ if eval_2D == true
     tests = [ % 1=boundary, 2=density, 3=bulk modulus, 4=shear modulus, 5=viscosity
         [2,MagVar],
         [4,MagVar]
-        ];
+        ]
     
     ModelTests = cell(1);
     for t = 1:length(tests(1,:))-1
